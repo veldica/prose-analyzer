@@ -49,3 +49,18 @@ export interface ProseAnalysisOptions {
   lexical?: LexicalAnalysisOptions;
   narrative?: NarrativeAnalysisOptions;
 }
+
+/**
+ * Compatible with @veldica/prose-tokenizer TokenizedDocument.
+ */
+export interface TokenizedDocument {
+  paragraphs: string[];
+  sentences: string[];
+  words: string[];
+  counts: {
+    word_count: number;
+    sentence_count: number;
+    paragraph_count: number;
+    [key: string]: any;
+  };
+}

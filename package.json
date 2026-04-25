@@ -1,6 +1,6 @@
 {
   "name": "@veldica/prose-analyzer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Deterministic prose style metrics for measuring variety, density, repetition, and narrative texture. Designed for AI editorial pipelines and writing tools.",
   "type": "module",
   "main": "./dist/index.js",

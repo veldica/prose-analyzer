@@ -1,6 +1,13 @@
 import { describe, it } from "node:test";
 import assert from "node:assert";
-import { analyzeLexical, analyzeNarrative, isSensory, isAbstract, analyzeProse } from "./index.js";
+import { 
+  analyzeLexical, 
+  analyzeNarrative, 
+  isSensory, 
+  isAbstract, 
+  analyzeProse,
+  analyzeDocument
+} from "./index.js";
 
 describe("Combined Analysis", () => {
   it("runs both lexical and narrative analysis", () => {
@@ -14,6 +21,23 @@ describe("Combined Analysis", () => {
     assert.ok(result.lexical);
     assert.ok(result.narrative);
     assert.strictEqual(result.lexical.unique_word_count, 4);
+    assert.ok(result.narrative.sensory_term_density > 0);
+  });
+
+  it("analyzeDocument bridge works with TokenizedDocument", () => {
+    const mockDoc = {
+      paragraphs: ["The sun was bright and hot."],
+      sentences: ["The sun was bright and hot."],
+      words: ["the", "sun", "was", "bright", "and", "hot"],
+      counts: {
+        word_count: 6,
+        sentence_count: 1,
+        paragraph_count: 1
+      }
+    };
+
+    const result = analyzeDocument(mockDoc);
+    assert.strictEqual(result.lexical.unique_word_count, 6);
     assert.ok(result.narrative.sensory_term_density > 0);
   });
 });

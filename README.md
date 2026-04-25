@@ -55,29 +55,41 @@ npm install @veldica/prose-analyzer
 ## Quick Start
 
 ### Comprehensive Analysis (Recommended)
-The easiest way to get a full stylistic profile is using the combined `analyzeProse` function.
+The easiest way to get a full stylistic profile is using the `analyzeDocument` bridge with the Veldica tokenizer.
 
 ```ts
 import { tokenize } from "@veldica/prose-tokenizer";
-import { analyzeProse } from "@veldica/prose-analyzer";
+import { analyzeDocument } from "@veldica/prose-analyzer";
 
 const text = `The sun was a bright, heavy disk. "It is time," he said. 
 The sky turned from blue to black as the shadows grew long.`;
 
 // 1. Prepare text with the Veldica tokenizer
-const stats = tokenize(text);
+const doc = tokenize(text);
 
-// 2. Run combined analysis
-const results = analyzeProse(
-  stats.words, 
-  stats.sentences, 
-  stats.sentenceWordCounts, 
-  stats.paragraphWordCounts
-);
+// 2. Run combined analysis using the bridge
+const results = analyzeDocument(doc);
 
 console.log(results.lexical.lexical_diversity_mattr); // 0.85 (High variety)
 console.log(results.narrative.scene_density_proxy);   // 0.45 (Active pacing)
 console.log(results.narrative.sensory_term_density); // 0.23 (Vivid imagery)
+```
+
+### Advanced Usage (Manual Mapping)
+If you are using a custom tokenizer, you can call `analyzeProse` directly by providing the required counts.
+
+```ts
+import { analyzeProse } from "@veldica/prose-analyzer";
+
+const results = analyzeProse(
+  sentences, 
+  words, 
+  sentenceWordCounts, 
+  paragraphWordCounts,
+  { 
+    lexical: { windowSize: 100 } 
+  }
+);
 ```
 
 ### Advanced Lexical Options
@@ -104,8 +116,13 @@ isAbstract("policy"); // true
 
 ## API Reference
 
+### `analyzeDocument(doc, options?): ProseAnalysisResults`
+The recommended entry point for users of `@veldica/prose-tokenizer`. Automatically maps nested counts and runs a full analysis.
+- `doc`: A `TokenizedDocument` from the Veldica tokenizer.
+- `options`: (Optional) Object containing `lexical` and `narrative` configurations.
+
 ### `analyzeProse(sentences, words, sentenceWordCounts, paragraphWordCounts, options?): ProseAnalysisResults`
-The primary combined entry point. Executes both lexical and narrative analysis.
+Low-level combined entry point. Useful if you are using a custom tokenizer.
 - `options`: (Optional) Object containing `lexical` and `narrative` configurations.
 
 ### `analyzeLexical(words: string[], options?: LexicalAnalysisOptions): LexicalBase`
